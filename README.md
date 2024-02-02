@@ -1,2 +1,3 @@
-# CollyWebscraper
-This repository contains a project for building a webscraper in Go using the Colly framework
+# WebscraperProject
+This project is a web scraper built in Go using the Colly framework
+
