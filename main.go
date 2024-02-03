@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"os"
-	"strings"
+	"regexp"
 
 	"github.com/gocolly/colly/v2"
 )
@@ -25,23 +25,29 @@ func main() {
 		"https://en.wikipedia.org/wiki/Software_agent",
 		"https://en.wikipedia.org/wiki/Robotic_process_automation",
 		"https://en.wikipedia.org/wiki/Chatbot",
-		"https://en.wikipedia.org/wiki/Applications_of_artificial_intelligence",
 		"https://en.wikipedia.org/wiki/Android_(robot)",
 	}
 
+	//Create JSON lines file
 	file, err := os.Create("items.jl")
 	if err != nil {
 		log.Fatalf("Failed to create file: %s", err)
 	}
 	defer file.Close()
 
+	// Create a new collector instance
 	c := colly.NewCollector()
+
+	c.OnHTML("h1#firstHeading", func(e *colly.HTMLElement) {
+		e.Request.Ctx.Put("title", e.Text)
+	})
 
 	c.OnHTML("#bodyContent", func(e *colly.HTMLElement) {
 		url := e.Request.URL.String()
 		title := e.Request.Ctx.Get("title")
 		text := stripHTML(e.Text) // Use the stripHTML function here
 
+		// Create a PageInfo object
 		pageInfo := PageInfo{URL: url, Title: title, Text: text}
 
 		err := writeJSON(pageInfo, file) // Use the encapsulated function
@@ -50,11 +56,13 @@ func main() {
 		}
 	})
 
+	// Start scraping the URLs
 	for _, url := range urls {
 		c.Visit(url)
 	}
 }
 
+// JSON writing function
 func writeJSON(info PageInfo, file *os.File) error {
 	jsonData, err := json.Marshal(info)
 	if err != nil {
@@ -65,6 +73,9 @@ func writeJSON(info PageInfo, file *os.File) error {
 	return err
 }
 
+// Use RegEx to strip HTML tags
 func stripHTML(content string) string {
-	return strings.Join(strings.Fields(strings.TrimSpace(content)), " ")
+	// Regular expression to match HTML tags
+	re := regexp.MustCompile(`<[^>]*>`)
+	return re.ReplaceAllString(content, "")
 }

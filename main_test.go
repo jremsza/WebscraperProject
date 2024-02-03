@@ -1,41 +1,48 @@
 package main
 
 import (
-	"encoding/json"
-	"io"
 	"os"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
-func TestWriteJSONToFile(t *testing.T) {
-	tempFile, err := io.TempFile("", "test")
+// Test the writeJSON function
+func TestWriteJSON(t *testing.T) {
+	tempFile, err := os.CreateTemp("", "test")
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer os.Remove(tempFile.Name())
 
 	info := PageInfo{
-		URL:   "https://example.com",
+		URL:   "Test URL",
 		Title: "Test Title",
-		Text:  "Test Content",
+		Text:  "Test Text"}
+
+	// Call the function to test
+	err = writeJSON(info, tempFile)
+	if err != nil {
+		t.Fatal(err)
 	}
 
-	// Execute
-	err = writeJSON(info, tempFile)
-	assert.NoError(t, err)
+	// Read the file's contents
+	contents, err := os.ReadFile(tempFile.Name())
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	// Verify
-	tempFile.Seek(0, 0) // Go back to the start of the file
-	bytes, err := io.ReadAll(tempFile)
-	assert.NoError(t, err)
+	// Check if the contents
+	expected := "{\"url\":\"Test URL\",\"title\":\"Test Title\",\"text\":\"Test Text\"}\n"
+	if string(contents) != expected {
+		t.Errorf("Expected %q, got %q", expected, contents)
+	}
+}
 
-	var pageInfo PageInfo
-	err = json.Unmarshal(bytes, &pageInfo)
-	assert.NoError(t, err)
-
-	assert.Equal(t, "Test Title", pageInfo.Title)
-	assert.Equal(t, "Test Content", pageInfo.Text)
-	assert.Equal(t, "https://example.com", pageInfo.URL)
+func TestStripHTML(t *testing.T) {
+	// Test the stripHTML function
+	input := "<p>Test String.</p>"
+	expected := "Test String."
+	result := stripHTML(input)
+	if result != expected {
+		t.Errorf("Expected %q, got %q", expected, result)
+	}
 }
