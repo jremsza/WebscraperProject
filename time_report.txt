@@ -1,0 +1,16 @@
+Go Web Scraper Program
+$ time ./robotwiki.exe
+
+real    0m0.646s
+user    0m0.000s
+sys     0m0.000s
+
+
+Python Web Scraper Program
+$ time python run-articles-spider.py
+
+JSON lines written to items.jl
+
+real    0m17.606s
+user    0m0.000s
+sys     0m0.015s
