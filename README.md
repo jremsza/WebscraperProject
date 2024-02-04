@@ -4,7 +4,7 @@ To use the program navigate to the directory on a bash command line where robotw
 ./robotwiki.exe
 items.jl file populates in that directory and contains the text scraped from the web.
 
-**Program Walktrhough**
+**Program Walkthrough**
 This project is a web scraper built in Go using the Colly framework.
 
 1. Creates a JSON Lines file, ensuring the file is closed properly at the end of operations using a defer statement.
