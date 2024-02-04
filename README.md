@@ -1,4 +1,4 @@
-# WebscraperProject
+# Webscraper Project
 #Progam Use
 To use the program navigate to the directory on a bash command line where robotwiki.exe is stored and run the following command:
 ./robotwiki.exe
