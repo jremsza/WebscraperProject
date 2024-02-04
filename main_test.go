@@ -41,7 +41,7 @@ func TestStripHTML(t *testing.T) {
 	// Test the stripHTML function
 	input := "<p>Test String.</p>"
 	expected := "Test String."
-	result := stripHTML(input)
+	result := cleanHTML(input)
 	if result != expected {
 		t.Errorf("Expected %q, got %q", expected, result)
 	}

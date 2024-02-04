@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"strings"
 
 	"github.com/gocolly/colly/v2"
 )
@@ -45,18 +46,18 @@ func main() {
 	c.OnHTML("#bodyContent", func(e *colly.HTMLElement) {
 		url := e.Request.URL.String()
 		title := e.Request.Ctx.Get("title")
-		text := stripHTML(e.Text) // Use the stripHTML function here
+		text := cleanHTML(e.Text) // cleanHTML function used here
 
 		// Create a PageInfo object
 		pageInfo := PageInfo{URL: url, Title: title, Text: text}
 
-		err := writeJSON(pageInfo, file) // Use the encapsulated function
+		err := writeJSON(pageInfo, file)
 		if err != nil {
 			log.Printf("Failed to write to file: %s", err)
 		}
 	})
 
-	// Start scraping the URLs
+	// scrape all the URLs
 	for _, url := range urls {
 		c.Visit(url)
 	}
@@ -74,8 +75,12 @@ func writeJSON(info PageInfo, file *os.File) error {
 }
 
 // Use RegEx to strip HTML tags
-func stripHTML(content string) string {
+func cleanHTML(content string) string {
 	// Regular expression to match HTML tags
 	re := regexp.MustCompile(`<[^>]*>`)
-	return re.ReplaceAllString(content, "")
+	// Remove HTML tags
+	noHTML := re.ReplaceAllString(content, "")
+	// Remove whitespace
+	noWhitespace := strings.TrimSpace(noHTML)
+	return noWhitespace
 }
