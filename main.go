@@ -79,8 +79,8 @@ func cleanHTML(content string) string {
 	// Regular expression to match HTML tags
 	re := regexp.MustCompile(`<[^>]*>`)
 	// Remove HTML tags
-	noHTML := re.ReplaceAllString(content, "")
+	trimHTML := re.ReplaceAllString(content, "")
 	// Remove whitespace
-	noWhitespace := strings.TrimSpace(noHTML)
-	return noWhitespace
+	trimWhitespace := strings.TrimSpace(trimHTML)
+	return trimWhitespace
 }

@@ -24,13 +24,13 @@ func TestWriteJSON(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	// Read the file's contents
+	// Read the file contents
 	contents, err := os.ReadFile(tempFile.Name())
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	// Check if the contents
+	// Check the contents
 	expected := "{\"url\":\"Test URL\",\"title\":\"Test Title\",\"text\":\"Test Text\"}\n"
 	if string(contents) != expected {
 		t.Errorf("Expected %q, got %q", expected, contents)
@@ -38,7 +38,7 @@ func TestWriteJSON(t *testing.T) {
 }
 
 func TestStripHTML(t *testing.T) {
-	// Test the stripHTML function
+	// Test the stripHTML function with tags
 	input := "<p>Test String.</p>"
 	expected := "Test String."
 	result := cleanHTML(input)
